@@ -564,4 +564,698 @@ class SwiftTDDTests: XCTestCase {
         XCTAssertEqual(Money.dollar(10).value, five.times(2)!.value)
         XCTAssertEqual(Money.dollar(15).value, five.times(3)!.value)
     }
+    
+    func testMoney7() throws {
+        class Money {
+            fileprivate var amount: Int
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            var currency: String {
+                return ""
+            }
+        
+            init(_ amount: Int) {
+                self.amount = amount
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self)" == "\(money.self)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return nil
+            }
+            
+            static func dollar(_ amount: Int) -> Dollar {
+                return Dollar(amount)
+            }
+            
+            static func franc(_ amount: Int) -> Franc {
+                return Franc(amount)
+            }
+        }
+
+        class Dollar: Money {
+            override var currency: String {
+                return "USD"
+            }
+
+            override func times(_ multiplier: Int) -> Money? {
+                return Dollar(self.amount * multiplier)
+            }
+        }
+        class Franc: Money {
+            override var currency: String {
+                return "CHF"
+            }
+
+            override func times(_ multiplier: Int) -> Money? {
+                return Franc(self.amount * multiplier)
+            }
+        }
+        XCTAssertTrue(Money.dollar(5).equals(Money.dollar(5)))
+        XCTAssertFalse(Money.dollar(5).equals(Money.dollar(6)))
+        XCTAssertTrue(Money.franc(5).equals(Money.franc(5)))
+        XCTAssertFalse(Money.franc(5).equals(Money.franc(6)))
+        XCTAssertFalse(Money.franc(5).equals(Money.dollar(5)))
+        
+        let five: Money = Money.dollar(5)
+        XCTAssertEqual(Money.dollar(10).value, five.times(2)!.value)
+        XCTAssertEqual(Money.dollar(15).value, five.times(3)!.value)
+        
+        
+        XCTAssertEqual("USD", Money.dollar(1).currency)
+        XCTAssertEqual("CHF", Money.franc(1).currency)
+    }
+    
+    func testMoney8() throws {
+        class Money {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self)" == "\(money.self)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return nil
+            }
+            
+            static func dollar(_ amount: Int) -> Dollar {
+                return Dollar(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Franc {
+                return Franc(amount, currency: "CHF")
+            }
+        }
+
+        class Dollar: Money {
+            override func times(_ multiplier: Int) -> Money? {
+                return Money.dollar(self.amount * multiplier)
+            }
+        }
+        class Franc: Money {
+            override func times(_ multiplier: Int) -> Money? {
+                return Money.franc(self.amount * multiplier)
+            }
+        }
+        XCTAssertTrue(Money.dollar(5).equals(Money.dollar(5)))
+        XCTAssertFalse(Money.dollar(5).equals(Money.dollar(6)))
+        XCTAssertTrue(Money.franc(5).equals(Money.franc(5)))
+        XCTAssertFalse(Money.franc(5).equals(Money.franc(6)))
+        XCTAssertFalse(Money.franc(5).equals(Money.dollar(5)))
+        
+        let five: Money = Money.dollar(5)
+        XCTAssertEqual(Money.dollar(10).value, five.times(2)!.value)
+        XCTAssertEqual(Money.dollar(15).value, five.times(3)!.value)
+        
+        
+        XCTAssertEqual("USD", Money.dollar(1).currency)
+        XCTAssertEqual("CHF", Money.franc(1).currency)
+    }
+    
+    func testMoney9() throws {
+        class Money {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self)" == "\(money.self)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return nil
+            }
+            
+            static func dollar(_ amount: Int) -> Dollar {
+                return Dollar(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Franc {
+                return Franc(amount, currency: "CHF")
+            }
+        }
+
+        class Dollar: Money {
+            override func times(_ multiplier: Int) -> Money? {
+                return Dollar(self.amount * multiplier, currency: self.currency)
+            }
+        }
+        class Franc: Money {
+            override func times(_ multiplier: Int) -> Money? {
+                return Franc(self.amount * multiplier, currency: self.currency)
+            }
+        }
+        XCTAssertTrue(Money.dollar(5).equals(Money.dollar(5)))
+        XCTAssertFalse(Money.dollar(5).equals(Money.dollar(6)))
+        XCTAssertTrue(Money.franc(5).equals(Money.franc(5)))
+        XCTAssertFalse(Money.franc(5).equals(Money.franc(6)))
+        XCTAssertFalse(Money.franc(5).equals(Money.dollar(5)))
+        
+        let five: Money = Money.dollar(5)
+        XCTAssertEqual(Money.dollar(10).value, five.times(2)!.value)
+        XCTAssertEqual(Money.dollar(15).value, five.times(3)!.value)
+        
+        
+        XCTAssertEqual("USD", Money.dollar(1).currency)
+        XCTAssertEqual("CHF", Money.franc(1).currency)
+    }
+    
+    func testMoney10() throws {
+        class Money {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self)" == "\(money.self)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return nil
+            }
+            
+            static func dollar(_ amount: Int) -> Dollar {
+                return Dollar(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Franc {
+                return Franc(amount, currency: "CHF")
+            }
+        }
+
+        class Dollar: Money {
+            override func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+        }
+        class Franc: Money {
+            override func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+        }
+        XCTAssertTrue(Money.dollar(5).equals(Money.dollar(5)))
+        XCTAssertFalse(Money.dollar(5).equals(Money.dollar(6)))
+        XCTAssertTrue(Money.franc(5).equals(Money.franc(5)))
+        XCTAssertFalse(Money.franc(5).equals(Money.franc(6)))
+        XCTAssertFalse(Money.franc(5).equals(Money.dollar(5)))
+        
+        let five: Money = Money.dollar(5)
+        XCTAssertEqual(Money.dollar(10).value, five.times(2)!.value)
+        XCTAssertEqual(Money.dollar(15).value, five.times(3)!.value)
+        
+        
+        XCTAssertEqual("USD", Money.dollar(1).currency)
+        XCTAssertEqual("CHF", Money.franc(1).currency)
+    }
+    
+    func testMoney11() throws {
+        class Money {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self)" == "\(money.self)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return nil
+            }
+            
+            static func dollar(_ amount: Int) -> Dollar {
+                return Dollar(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Franc {
+                return Franc(amount, currency: "CHF")
+            }
+        }
+
+        class Dollar: Money {
+            override func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+        }
+        class Franc: Money {
+            override func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+        }
+        XCTAssertTrue(Money.dollar(5).equals(Money.dollar(5)))
+        XCTAssertFalse(Money.dollar(5).equals(Money.dollar(6)))
+        XCTAssertTrue(Money.franc(5).equals(Money.franc(5)))
+        XCTAssertFalse(Money.franc(5).equals(Money.franc(6)))
+        XCTAssertFalse(Money.franc(5).equals(Money.dollar(5)))
+        
+        let five: Money = Money.dollar(5)
+        XCTAssertEqual(Money.dollar(10).value, five.times(2)!.value)
+        XCTAssertEqual(Money.dollar(15).value, five.times(3)!.value)
+        
+        
+        XCTAssertEqual("USD", Money.dollar(1).currency)
+        XCTAssertEqual("CHF", Money.franc(1).currency)
+        XCTAssertTrue(Money(10, currency: "CHF").equals(Franc(10, currency: "CHF")))
+    }
+    
+    func testMoney12() throws {
+        class Money {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return nil
+            }
+            
+            static func dollar(_ amount: Int) -> Dollar {
+                return Dollar(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Franc {
+                return Franc(amount, currency: "CHF")
+            }
+        }
+
+        class Dollar: Money {
+            override func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+        }
+        class Franc: Money {
+            override func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+        }
+        XCTAssertTrue(Money.dollar(5).equals(Money.dollar(5)))
+        XCTAssertFalse(Money.dollar(5).equals(Money.dollar(6)))
+        XCTAssertTrue(Money.franc(5).equals(Money.franc(5)))
+        XCTAssertFalse(Money.franc(5).equals(Money.franc(6)))
+        XCTAssertFalse(Money.franc(5).equals(Money.dollar(5)))
+        
+        let five: Money = Money.dollar(5)
+        XCTAssertEqual(Money.dollar(10).value, five.times(2)!.value)
+        XCTAssertEqual(Money.dollar(15).value, five.times(3)!.value)
+        
+        
+        XCTAssertEqual("USD", Money.dollar(1).currency)
+        XCTAssertEqual("CHF", Money.franc(1).currency)
+        XCTAssertTrue(Money(10, currency: "CHF").equals(Franc(10, currency: "CHF")))
+    }
+    
+    func testMoney13() throws {
+        class Money {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            static func dollar(_ amount: Int) -> Dollar {
+                return Dollar(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Franc {
+                return Franc(amount, currency: "CHF")
+            }
+        }
+
+        class Dollar: Money {
+            
+        }
+        
+        class Franc: Money {
+            
+        }
+        XCTAssertTrue(Money.dollar(5).equals(Money.dollar(5)))
+        XCTAssertFalse(Money.dollar(5).equals(Money.dollar(6)))
+        XCTAssertTrue(Money.franc(5).equals(Money.franc(5)))
+        XCTAssertFalse(Money.franc(5).equals(Money.franc(6)))
+        XCTAssertFalse(Money.franc(5).equals(Money.dollar(5)))
+        
+        let five: Money = Money.dollar(5)
+        XCTAssertEqual(Money.dollar(10).value, five.times(2)!.value)
+        XCTAssertEqual(Money.dollar(15).value, five.times(3)!.value)
+        
+        
+        XCTAssertEqual("USD", Money.dollar(1).currency)
+        XCTAssertEqual("CHF", Money.franc(1).currency)
+        XCTAssertTrue(Money(10, currency: "CHF").equals(Franc(10, currency: "CHF")))
+    }
+    
+    func testMoney14() throws {
+        class Money {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+
+        XCTAssertTrue(Money.dollar(5).equals(Money.dollar(5)))
+        XCTAssertFalse(Money.dollar(5).equals(Money.dollar(6)))
+        XCTAssertTrue(Money.franc(5).equals(Money.franc(5)))
+        XCTAssertFalse(Money.franc(5).equals(Money.franc(6)))
+        XCTAssertFalse(Money.franc(5).equals(Money.dollar(5)))
+        
+        let five: Money = Money.dollar(5)
+        XCTAssertEqual(Money.dollar(10).value, five.times(2)!.value)
+        XCTAssertEqual(Money.dollar(15).value, five.times(3)!.value)
+        
+        
+        XCTAssertEqual("USD", Money.dollar(1).currency)
+        XCTAssertEqual("CHF", Money.franc(1).currency)
+        XCTAssertTrue(Money(10, currency: "CHF").equals(Money(10, currency: "CHF")))
+    }
+    
+    func testMoney15() throws {
+        class Money {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            func plus(_ addend: Money) -> Money {
+                return Money(amount + addend.amount, currency: currency)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+
+        let sum = Money.dollar(5).plus(Money.dollar(5))
+        XCTAssertTrue(Money.dollar(10).equals(sum))
+    }
+    
+    func testBank() throws {
+        class Experssion {
+            
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            func plus(_ addend: Money) -> Experssion {
+                return Money(amount + addend.amount, currency: currency)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        class Bank {
+            func reduce(_ source: Experssion, to: String) -> Money {
+                return Money.dollar(10)
+            }
+        }
+        
+        let five: Money = Money.dollar(5)
+        let bank = Bank()
+        let sum = five.plus(five)
+        let reduced = bank.reduce(sum, to: "USD")
+        XCTAssertTrue(Money.dollar(10).equals(reduced))
+    }
+    
+    func testBank2() throws {
+        class Experssion {
+            
+        }
+        
+        class Sum: Experssion {
+            var augend: Money
+            var addend: Money
+            
+            init(_ augend: Money, _ addend: Money) {
+                self.augend = augend
+                self.addend = addend
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            func plus(_ addend: Money) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        class Bank {
+            func reduce(_ source: Experssion, to: String) -> Money {
+                return Money.dollar(10)
+            }
+        }
+        
+        let five: Money = Money.dollar(5)
+        let result: Experssion = five.plus(five)
+        let sum: Sum = result as! Sum
+        XCTAssertTrue(five.equals(sum.augend))
+        XCTAssertTrue(five.equals(sum.addend))
+        
+        let bank = Bank()
+        let reduced = bank.reduce(sum, to: "USD")
+        XCTAssertTrue(Money.dollar(10).equals(reduced))
+        
+        let sum2 = Sum(Money.dollar(3), Money.dollar(4))
+        let result2 = bank.reduce(sum2, to: "USD")
+        XCTAssertTrue(Money.dollar(7).equals(result2))
+    }
+    
+    func testBank3() throws {
+        class Experssion {
+            
+        }
+        
+        class Sum: Experssion {
+            var augend: Money
+            var addend: Money
+            
+            init(_ augend: Money, _ addend: Money) {
+                self.augend = augend
+                self.addend = addend
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            func plus(_ addend: Money) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        class Bank {
+            func reduce(_ source: Experssion, to: String) -> Money {
+                let sum = source as! Sum
+                let amount = sum.augend.amount + sum.addend.amount
+                return Money(amount, currency: to)
+            }
+        }
+        
+        let five: Money = Money.dollar(5)
+        let result: Experssion = five.plus(five)
+        let sum: Sum = result as! Sum
+        XCTAssertTrue(five.equals(sum.augend))
+        XCTAssertTrue(five.equals(sum.addend))
+        
+        let bank = Bank()
+        let reduced = bank.reduce(sum, to: "USD")
+        XCTAssertTrue(Money.dollar(10).equals(reduced))
+        
+        let sum2 = Sum(Money.dollar(3), Money.dollar(4))
+        let result2 = bank.reduce(sum2, to: "USD")
+        XCTAssertTrue(Money.dollar(7).equals(result2))
+    }
 }

@@ -1258,4 +1258,914 @@ class SwiftTDDTests: XCTestCase {
         let result2 = bank.reduce(sum2, to: "USD")
         XCTAssertTrue(Money.dollar(7).equals(result2))
     }
+    
+    func testBank4() throws {
+        class Experssion {
+            
+        }
+        
+        class Sum: Experssion {
+            var augend: Money
+            var addend: Money
+            
+            init(_ augend: Money, _ addend: Money) {
+                self.augend = augend
+                self.addend = addend
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            func plus(_ addend: Money) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        class Bank {
+            func reduce(_ source: Experssion, to: String) -> Money {
+                let sum = source as! Sum
+                let amount = sum.augend.amount + sum.addend.amount
+                return Money(amount, currency: to)
+            }
+        }
+        
+        let five: Money = Money.dollar(5)
+        let result: Experssion = five.plus(five)
+        let sum: Sum = result as! Sum
+        XCTAssertTrue(five.equals(sum.augend))
+        XCTAssertTrue(five.equals(sum.addend))
+        
+        let bank = Bank()
+        let reduced = bank.reduce(sum, to: "USD")
+        XCTAssertTrue(Money.dollar(10).equals(reduced))
+        
+        let sum2 = Sum(Money.dollar(3), Money.dollar(4))
+        let result2 = bank.reduce(sum2, to: "USD")
+        XCTAssertTrue(Money.dollar(7).equals(result2))
+        
+        let result3 = bank.reduce(Money.dollar(1), to: "USD")
+        XCTAssertTrue(Money.dollar(1).equals(result3))
+    }
+    
+    func testBank5() throws {
+        class Experssion {
+            
+        }
+        
+        class Sum: Experssion {
+            var augend: Money
+            var addend: Money
+            
+            init(_ augend: Money, _ addend: Money) {
+                self.augend = augend
+                self.addend = addend
+            }
+            
+            func reduce(_ to: String) -> Money {
+                let amount = augend.amount + addend.amount
+                return Money(amount, currency: to)
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            func plus(_ addend: Money) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        class Bank {
+            func reduce(_ source: Experssion, to: String) -> Money {
+                if let sum = source as? Money {
+                    return sum
+                }  else {
+                    let sum = source as! Sum
+                    return sum.reduce(to)
+                }
+            }
+        }
+        
+        let five: Money = Money.dollar(5)
+        let result: Experssion = five.plus(five)
+        let sum: Sum = result as! Sum
+        XCTAssertTrue(five.equals(sum.augend))
+        XCTAssertTrue(five.equals(sum.addend))
+        
+        let bank = Bank()
+        let reduced = bank.reduce(sum, to: "USD")
+        XCTAssertTrue(Money.dollar(10).equals(reduced))
+        
+        let sum2 = Sum(Money.dollar(3), Money.dollar(4))
+        let result2 = bank.reduce(sum2, to: "USD")
+        XCTAssertTrue(Money.dollar(7).equals(result2))
+        
+        let result3 = bank.reduce(Money.dollar(1), to: "USD")
+        XCTAssertTrue(Money.dollar(1).equals(result3))
+    }
+    
+    func testBank6() throws {
+        class Experssion {
+            func reduce(_ to: String) -> Money {
+                return Money(0, currency: "")
+            }
+        }
+        
+        class Sum: Experssion {
+            var augend: Money
+            var addend: Money
+            
+            init(_ augend: Money, _ addend: Money) {
+                self.augend = augend
+                self.addend = addend
+            }
+            
+            override func reduce(_ to: String) -> Money {
+                let amount = augend.amount + addend.amount
+                return Money(amount, currency: to)
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            func plus(_ addend: Money) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            override func reduce(_ to: String) -> Money {
+                return self
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        class Bank {
+            func reduce(_ source: Experssion, to: String) -> Money {
+                return source.reduce(to)
+            }
+        }
+        
+        let five: Money = Money.dollar(5)
+        let result: Experssion = five.plus(five)
+        let sum: Sum = result as! Sum
+        XCTAssertTrue(five.equals(sum.augend))
+        XCTAssertTrue(five.equals(sum.addend))
+        
+        let bank = Bank()
+        let reduced = bank.reduce(sum, to: "USD")
+        XCTAssertTrue(Money.dollar(10).equals(reduced))
+        
+        let sum2 = Sum(Money.dollar(3), Money.dollar(4))
+        let result2 = bank.reduce(sum2, to: "USD")
+        XCTAssertTrue(Money.dollar(7).equals(result2))
+        
+        let result3 = bank.reduce(Money.dollar(1), to: "USD")
+        XCTAssertTrue(Money.dollar(1).equals(result3))
+    }
+    
+    func testBank7() throws {
+        class Experssion {
+            func reduce(_ bank: Bank, to: String) -> Money {
+                return Money(0, currency: "")
+            }
+        }
+        
+        class Sum: Experssion {
+            var augend: Money
+            var addend: Money
+            
+            init(_ augend: Money, _ addend: Money) {
+                self.augend = augend
+                self.addend = addend
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let amount = augend.amount + addend.amount
+                return Money(amount, currency: to)
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            func plus(_ addend: Money) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let rate = bank.rate(currency, to: to)
+                return Money(amount / rate, currency: to)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        struct Pair: Hashable {
+            private let from: String
+            private let to: String
+            
+            init(from: String, to: String) {
+                self.from = from
+                self.to = to
+            }
+            
+            func equal(_ pair: Pair) -> Bool {
+                return from == pair.from && to == pair.to
+            }
+        }
+        
+        class Bank {
+            private var rates = [Pair: Int]()
+
+            func reduce(_ source: Experssion, to: String) -> Money {
+                return source.reduce(self, to: to)
+            }
+            
+            func rate(_ from: String, to: String) -> Int {
+                return rates[Pair(from: from, to: to)]!
+            }
+            
+            func addRate(_ from: String, _ to: String, rate: Int) {
+                rates.updateValue(rate, forKey: Pair(from: from, to: to))
+            }
+        }
+        
+        XCTAssertEqual(1, Bank().rate("USD", to: "USD"))
+//        let bank = Bank()
+//        bank.addRate("CHF", "USD", 2)
+//        let result = bank.reduce(Money.franc(2), to: "USD")
+//        XCTAssertTrue(Money.dollar(1).equals(result))
+    }
+    
+    func testBank8() throws {
+        class Experssion {
+            func reduce(_ bank: Bank, to: String) -> Money {
+                return Money(0, currency: "")
+            }
+        }
+        
+        class Sum: Experssion {
+            var augend: Money
+            var addend: Money
+            
+            init(_ augend: Money, _ addend: Money) {
+                self.augend = augend
+                self.addend = addend
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let amount = augend.amount + addend.amount
+                return Money(amount, currency: to)
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            func plus(_ addend: Money) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let rate = bank.rate(currency, to: to)
+                return Money(amount / rate, currency: to)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        struct Pair: Hashable {
+            private let from: String
+            private let to: String
+            
+            init(from: String, to: String) {
+                self.from = from
+                self.to = to
+            }
+            
+            func equal(_ pair: Pair) -> Bool {
+                return from == pair.from && to == pair.to
+            }
+        }
+        
+        class Bank {
+            private var rates = [Pair: Int]()
+
+            func reduce(_ source: Experssion, to: String) -> Money {
+                return source.reduce(self, to: to)
+            }
+            
+            func rate(_ from: String, to: String) -> Int {
+                if from == to { return 1 }
+                return rates[Pair(from: from, to: to)]!
+            }
+            
+            func addRate(_ from: String, _ to: String, _ rate: Int) {
+                rates.updateValue(rate, forKey: Pair(from: from, to: to))
+            }
+        }
+        
+        XCTAssertEqual(1, Bank().rate("USD", to: "USD"))
+        let bank = Bank()
+        bank.addRate("CHF", "USD", 2)
+        let result = bank.reduce(Money.franc(2), to: "USD")
+        XCTAssertTrue(Money.dollar(1).equals(result))
+        
+        let fiveBucks = Money.dollar(5)
+        let tenFrancs = Money.franc(10)
+        let result2 = bank.reduce(fiveBucks.plus(tenFrancs), to: "USD")
+        XCTAssertTrue(Money.dollar(10).equals(result2))
+    }
+    
+    func testBank9() throws {
+        class Experssion {
+            func reduce(_ bank: Bank, to: String) -> Money {
+                return Money(0, currency: "")
+            }
+        }
+        
+        class Sum: Experssion {
+            var augend: Money
+            var addend: Money
+            
+            init(_ augend: Money, _ addend: Money) {
+                self.augend = augend
+                self.addend = addend
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let amount = augend.reduce(bank, to: to).amount + addend.reduce(bank, to: to).amount
+                return Money(amount, currency: to)
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Money? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            func plus(_ addend: Money) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let rate = bank.rate(currency, to: to)
+                return Money(amount / rate, currency: to)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        struct Pair: Hashable {
+            private let from: String
+            private let to: String
+            
+            init(from: String, to: String) {
+                self.from = from
+                self.to = to
+            }
+            
+            func equal(_ pair: Pair) -> Bool {
+                return from == pair.from && to == pair.to
+            }
+        }
+        
+        class Bank {
+            private var rates = [Pair: Int]()
+
+            func reduce(_ source: Experssion, to: String) -> Money {
+                return source.reduce(self, to: to)
+            }
+            
+            func rate(_ from: String, to: String) -> Int {
+                if from == to { return 1 }
+                return rates[Pair(from: from, to: to)]!
+            }
+            
+            func addRate(_ from: String, _ to: String, _ rate: Int) {
+                rates.updateValue(rate, forKey: Pair(from: from, to: to))
+            }
+        }
+        
+        XCTAssertEqual(1, Bank().rate("USD", to: "USD"))
+        let bank = Bank()
+        bank.addRate("CHF", "USD", 2)
+        let result = bank.reduce(Money.franc(2), to: "USD")
+        XCTAssertTrue(Money.dollar(1).equals(result))
+        
+        let fiveBucks = Money.dollar(5)
+        let tenFrancs = Money.franc(10)
+        let result2 = bank.reduce(fiveBucks.plus(tenFrancs), to: "USD")
+        XCTAssertTrue(Money.dollar(10).equals(result2))
+    }
+    
+    func testBank10() throws {
+        class Experssion {
+            func reduce(_ bank: Bank, to: String) -> Money {
+                return Money(0, currency: "")
+            }
+            
+            func plus(_ addend: Experssion) -> Experssion {
+                return Sum(self, addend)
+            }
+        }
+        
+        class Sum: Experssion {
+            var augend: Experssion
+            var addend: Experssion
+            
+            init(_ augend: Experssion, _ addend: Experssion) {
+                self.augend = augend
+                self.addend = addend
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let amount = augend.reduce(bank, to: to).amount + addend.reduce(bank, to: to).amount
+                return Money(amount, currency: to)
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            func times(_ multiplier: Int) -> Experssion? {
+                return Money(self.amount * multiplier, currency: self.currency)
+            }
+            
+            override func plus(_ addend: Experssion) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let rate = bank.rate(currency, to: to)
+                return Money(amount / rate, currency: to)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        struct Pair: Hashable {
+            private let from: String
+            private let to: String
+            
+            init(from: String, to: String) {
+                self.from = from
+                self.to = to
+            }
+            
+            func equal(_ pair: Pair) -> Bool {
+                return from == pair.from && to == pair.to
+            }
+        }
+        
+        class Bank {
+            private var rates = [Pair: Int]()
+
+            func reduce(_ source: Experssion, to: String) -> Money {
+                return source.reduce(self, to: to)
+            }
+            
+            func rate(_ from: String, to: String) -> Int {
+                if from == to { return 1 }
+                return rates[Pair(from: from, to: to)]!
+            }
+            
+            func addRate(_ from: String, _ to: String, _ rate: Int) {
+                rates.updateValue(rate, forKey: Pair(from: from, to: to))
+            }
+        }
+        
+        XCTAssertEqual(1, Bank().rate("USD", to: "USD"))
+        let bank = Bank()
+        bank.addRate("CHF", "USD", 2)
+        let result = bank.reduce(Money.franc(2), to: "USD")
+        XCTAssertTrue(Money.dollar(1).equals(result))
+        
+        let fiveBucks: Experssion = Money.dollar(5)
+        let tenFrancs: Experssion = Money.franc(10)
+        let result2 = bank.reduce(fiveBucks.plus(tenFrancs), to: "USD")
+        XCTAssertTrue(Money.dollar(10).equals(result2))
+    }
+    
+    func testBank11() throws {
+        class Experssion {
+            func reduce(_ bank: Bank, to: String) -> Money {
+                return Money(0, currency: "")
+            }
+            
+            func plus(_ addend: Experssion) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            func times(_ multiplier: Int) -> Experssion {
+                return Experssion()
+            }
+        }
+        
+        class Sum: Experssion {
+            var augend: Experssion
+            var addend: Experssion
+            
+            init(_ augend: Experssion, _ addend: Experssion) {
+                self.augend = augend
+                self.addend = addend
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let amount = augend.reduce(bank, to: to).amount + addend.reduce(bank, to: to).amount
+                return Money(amount, currency: to)
+            }
+            
+            override func plus(_ addend: Experssion) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            override func times(_ multiplier: Int) -> Experssion {
+                return Sum(augend.times(multiplier), addend.times(multiplier))
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            override func times(_ multiplier: Int) -> Experssion {
+                return Money(amount * multiplier, currency: currency)
+            }
+            
+            override func plus(_ addend: Experssion) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let rate = bank.rate(currency, to: to)
+                return Money(amount / rate, currency: to)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        struct Pair: Hashable {
+            private let from: String
+            private let to: String
+            
+            init(from: String, to: String) {
+                self.from = from
+                self.to = to
+            }
+            
+            func equal(_ pair: Pair) -> Bool {
+                return from == pair.from && to == pair.to
+            }
+        }
+        
+        class Bank {
+            private var rates = [Pair: Int]()
+
+            func reduce(_ source: Experssion, to: String) -> Money {
+                return source.reduce(self, to: to)
+            }
+            
+            func rate(_ from: String, to: String) -> Int {
+                if from == to { return 1 }
+                return rates[Pair(from: from, to: to)]!
+            }
+            
+            func addRate(_ from: String, _ to: String, _ rate: Int) {
+                rates.updateValue(rate, forKey: Pair(from: from, to: to))
+            }
+        }
+        
+        let fiveBucks: Experssion = Money.dollar(5)
+        let tenFrancs: Experssion = Money.franc(10)
+        let bank: Bank = Bank()
+        bank.addRate("CHF", "USD", 2)
+        let sum: Experssion = Sum(fiveBucks, tenFrancs).plus(fiveBucks)
+        let result: Money = bank.reduce(sum, to: "USD")
+        XCTAssertTrue(Money.dollar(15).equals(result))
+        
+        let sum2: Experssion = Sum(fiveBucks, tenFrancs).times(2)
+        let result2: Money = bank.reduce(sum2, to: "USD")
+        XCTAssertTrue(Money.dollar(20).equals(result2))
+        
+        let sum3: Experssion = Money.dollar(1).plus(Money.dollar(1))
+        XCTAssertTrue((sum3 as? Money != nil))
+    }
+    
+    func testBank12() throws {
+        class Experssion {
+            func reduce(_ bank: Bank, to: String) -> Money {
+                return Money(0, currency: "")
+            }
+            
+            func plus(_ addend: Experssion) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            func times(_ multiplier: Int) -> Experssion {
+                return Experssion()
+            }
+        }
+        
+        class Sum: Experssion {
+            var augend: Experssion
+            var addend: Experssion
+            
+            init(_ augend: Experssion, _ addend: Experssion) {
+                self.augend = augend
+                self.addend = addend
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let amount = augend.reduce(bank, to: to).amount + addend.reduce(bank, to: to).amount
+                return Money(amount, currency: to)
+            }
+            
+            override func plus(_ addend: Experssion) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            override func times(_ multiplier: Int) -> Experssion {
+                return Sum(augend.times(multiplier), addend.times(multiplier))
+            }
+        }
+        
+        class Money: Experssion {
+            fileprivate var amount: Int
+            var currency: String
+            
+            var value: Int {
+                return self.amount
+            }
+            
+            init(_ amount: Int, currency: String) {
+                self.amount = amount
+                self.currency = currency
+            }
+            
+            func equals(_ object: AnyObject) -> Bool {
+                let money = object as! Money
+                return amount == money.amount && "\(self.currency)" == "\(money.currency)"
+            }
+            
+            override func times(_ multiplier: Int) -> Experssion {
+                return Money(amount * multiplier, currency: currency)
+            }
+            
+            override func plus(_ addend: Experssion) -> Experssion {
+                return Sum(self, addend)
+            }
+            
+            override func reduce(_ bank: Bank, to: String) -> Money {
+                let rate = bank.rate(currency, to: to)
+                return Money(amount / rate, currency: to)
+            }
+            
+            static func dollar(_ amount: Int) -> Money {
+                return Money(amount, currency: "USD")
+            }
+            
+            static func franc(_ amount: Int) -> Money {
+                return Money(amount, currency: "CHF")
+            }
+        }
+        
+        struct Pair: Hashable {
+            private let from: String
+            private let to: String
+            
+            init(from: String, to: String) {
+                self.from = from
+                self.to = to
+            }
+            
+            func equal(_ pair: Pair) -> Bool {
+                return from == pair.from && to == pair.to
+            }
+        }
+        
+        class Bank {
+            private var rates = [Pair: Int]()
+
+            func reduce(_ source: Experssion, to: String) -> Money {
+                return source.reduce(self, to: to)
+            }
+            
+            func rate(_ from: String, to: String) -> Int {
+                if from == to { return 1 }
+                return rates[Pair(from: from, to: to)]!
+            }
+            
+            func addRate(_ from: String, _ to: String, _ rate: Int) {
+                rates.updateValue(rate, forKey: Pair(from: from, to: to))
+            }
+        }
+        
+        let fiveBucks: Experssion = Money.dollar(5)
+        let tenFrancs: Experssion = Money.franc(10)
+        let bank: Bank = Bank()
+        bank.addRate("CHF", "USD", 2)
+        let sum: Experssion = Sum(fiveBucks, tenFrancs).plus(fiveBucks)
+        let result: Money = bank.reduce(sum, to: "USD")
+        XCTAssertTrue(Money.dollar(15).equals(result))
+        
+        let sum2: Experssion = Sum(fiveBucks, tenFrancs).times(2)
+        let result2: Money = bank.reduce(sum2, to: "USD")
+        XCTAssertTrue(Money.dollar(20).equals(result2))
+    }
 }
